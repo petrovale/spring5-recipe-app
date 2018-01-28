@@ -7,6 +7,7 @@ import guru.springframework.converters.UnitOfMeasureCommandToUnitOfMeasure;
 import guru.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.domain.Ingredient;
 import guru.springframework.domain.Recipe;
+import guru.springframework.repositories.IngredientRepository;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
 import org.junit.Before;
@@ -31,6 +32,9 @@ public class IngredientServiceImplTest {
     @Mock
     UnitOfMeasureRepository unitOfMeasureRepository;
 
+    @Mock
+    IngredientRepository ingredientRepository;
+
 
     IngredientService ingredientService;
 
@@ -44,7 +48,7 @@ public class IngredientServiceImplTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        ingredientService = new IngredientServiceImpl(ingredientToIngredientCommand, ingredientCommandToIngredient, recipeRepository, unitOfMeasureRepository);
+        ingredientService = new IngredientServiceImpl(ingredientToIngredientCommand, ingredientCommandToIngredient, recipeRepository, unitOfMeasureRepository, ingredientRepository);
     }
 
     @Test
@@ -106,6 +110,22 @@ public class IngredientServiceImplTest {
         verify(recipeRepository, times(1)).findById(anyLong());
         verify(recipeRepository, times(1)).save(any(Recipe.class));
 
+    }
+
+    @Test
+    public void testDeleteById() throws Exception {
+
+        //given
+        Long idRecipeToDelete = Long.valueOf(2L);
+        Long idIngredientToDelete = Long.valueOf(3L);
+
+        //when
+        ingredientRepository.deleteByRecipeIdAndIngredientId(idRecipeToDelete, idIngredientToDelete);
+
+        //no 'when', since method has void return type
+
+        //then
+        verify(ingredientRepository, times(1)).deleteByRecipeIdAndIngredientId(anyLong(), anyLong());
     }
 
 }
